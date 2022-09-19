@@ -16,11 +16,9 @@ void readText(char* file_name, struct String** text, char** buf, size_t* number_
 {
     struct stat stbuf;
     stat(file_name, &stbuf);
-    printf("%ld\n", stbuf.st_size);
 
     size_t file_size = (size_t) stbuf.st_size;
     *buf = (char*) calloc(file_size + SPACE_FOR_NULL, sizeof(char));
-    printf("!#!#!#!# BUF = %p\n", *buf);
     FILE* fp = fopen(file_name, "r");
     if (fp == NULL)
     {
@@ -48,12 +46,9 @@ void readText(char* file_name, struct String** text, char** buf, size_t* number_
     }
 
     (*buf)[*number_chars] = '\0';
-    //printf("%s\n", *buf);
-    //printf("pe = %p\n\n", &buf[number_chars]);
 
     *number_strings = countCh(*buf, '\n');
-    *text = (String*) calloc(*number_strings + SPACE_FOR_NULL, sizeof(String)); //НЕ ИЗМЕНЯЕТСЯ текст НАДО ПОСМОТрЕТЬ*
-    printf("!#!#!#!# TEXT = %p\n", text);
+    *text = (String*) calloc(*number_strings + SPACE_FOR_NULL, sizeof(String));
     String* run_text = *text;
     char* run_buf = *buf;
 
@@ -61,8 +56,6 @@ void readText(char* file_name, struct String** text, char** buf, size_t* number_
     run_text->ptr = *buf;
     while (*run_buf)
     {
-        //printf("run_buf = %p\n", run_buf);
-        //printf("run_text = %p---\n", run_text);
         len++;
 
         if ((run_buf != *buf) && (*(run_buf - 1) == '\0'))
@@ -79,25 +72,22 @@ void readText(char* file_name, struct String** text, char** buf, size_t* number_
         }
 
         run_buf++;
-        //printf("*** %d \n", *run_buf);
     }
-    printf("!@!@!@ %lu \n", run_buf - *buf);
-    printf("chs = %lu \n", *number_chars);
+
     run_text->ptr = NULL;
-    //printf("==== %p\n", run_text->ptr);
+
     fclose(fp);
 }
 
 size_t countCh(char* s, char c)
 {
     size_t n = 0;
-    //printf("---- %p\n", s);
+
     while (*s)
     {
-        //printf("*s = %c\n", *s);
+
         if (*s == c)
         {
-            //printf("^^^^^\n");
             n++;
         }
 
@@ -116,7 +106,6 @@ void printOriginalText(char* buf, size_t number_chars, char* file_name)
         printf("File open error \"%s\" \n", file_name);
         abort();
     }
-    printf("nub_strs = %lu \n", number_chars);
 
     char* run_buf = buf;
     size_t idx = 0;
