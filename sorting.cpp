@@ -42,6 +42,8 @@ size_t partit(void* s, size_t low, size_t high, size_t elemSz,
     size_t i = low - 1;
     printf("!!!!!\n");
     //printf("i = %lu \n", i);
+    void* ptr_i = (void*) ((char*) s + (i * elemSz));
+    void* ptr_j = (void*) ((char*) s + (low * elemSz));
     for (size_t j = low; j < high; j++)
     {
         //printf("&*&*&* ptr->i = %p ptr->j = %p pivot = %p i_piv = %lu j_piv = %lu piv_piv = %lu %p \n", s + (i * elemSz), s + (j * elemSz), pivot, i, j, high, s + ((i + 1) * elemSz));
@@ -51,33 +53,43 @@ size_t partit(void* s, size_t low, size_t high, size_t elemSz,
         printf("i = %lu \n", i);
         printf("j = %lu \n", j);
         printf("pivot = %lu \n", high);
-        if (compFun((void*) ((char*) s + (j * elemSz)), pivot) <= 0)
+        if (compFun(ptr_j, pivot) <= 0)
         {
             printf("@^@^@^@^@^\n");
-            i++;
+            ptr_i += elemSz;
             //printf("!0!0! i = %lu", i);
             //printf("$*$*$*$*$ ptr->i = %p\n", s + (i * elemSz));
-            swapEl((void*) ((char*) s + (i * elemSz)), (void*)((char*) s + (j * elemSz)));
+            swapEl(ptr_i, ptr_j);
         }
+
+        ptr_j += elemSz;
     }
 
-    swapEl((void*) ((char*) s + ((i + 1) * elemSz)), (void*) ((char*) s + (high * elemSz)));
+    ptr_i += elemSz;
+
+    swapEl(ptr_i, pivot);
     //printf("!*!*!* %lu \n", i + 1);
-    return (i + 1);
+    return ((char*) ptr_i - (char*) s) / elemSz;
 }
 
 void bubleSort(void* buf, size_t number_elems, size_t elemSz,
                long int (*compFun)(void* a, void* b), void (*swapEl)(void* x, void* y))
 {
+    void* ptr_i = buf;
     for (size_t i = 0; i < number_elems; i++)
     {
+        void* ptr_j = buf + i * elemSz;
         for (size_t j = i; j < number_elems; j++)
         {
-            if (compFun((char*) buf + (i * elemSz), (char*) buf + (j * elemSz)) > 0)
+            if (compFun(ptr_i, ptr_j) > 0)
             {
-                swapEl((void*) ((char*) buf + (i * elemSz)), (void*)((char*) buf + (j * elemSz)));
+                swapEl(ptr_i, ptr_j);
             }
+
+            ptr_j += elemSz;
         }
+
+        ptr_i += elemSz;
     }
 }
 
